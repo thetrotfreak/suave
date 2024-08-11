@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+joserfc = "*"
+sqlmodel = "*"
+fastapi = {extras = ["standard"], version = "*"}
+email-validator = "*"
+psycopg2 = "*"
+black = "*"
+isort = "*"
+autoflake = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
