@@ -7,7 +7,7 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
 
   postgres:
     image: "postgres:alpine"
@@ -41,7 +41,7 @@ services:
       # use `openssl rand -hex 32` to generate a `SECRET_KEY`
       # then update this environment variable
       # do not leave it an empty string before running
-      SECRET_KEY : ""
+      SECRET_KEY : "27d133cf1dff3abe96a0311480249261a535f68a1708dff53ff45a31f23defb3"
       ALGORITHM : "HS256"
       ACCESS_TOKEN_EXPIRE_MINUTES : 30
       SQLITE_URL-sqlite : "sqlite:///db.db"

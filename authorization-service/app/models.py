@@ -1,16 +1,18 @@
 import uuid
 
-from pydantic import EmailStr
+from pydantic import ConfigDict, EmailStr
+from sqlalchemy.dialects.postgresql import TEXT
 from sqlmodel import Field, SQLModel
 
 
 class UserBase(SQLModel):
     username: EmailStr
+    model_config = ConfigDict(revalidate_instances="always")
 
 
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
-    username: str = Field(index=True, unique=True)
+    username: EmailStr = Field(index=True, unique=True, sa_type=TEXT)
     password_hash: str = Field(nullable=False)
 
 
@@ -24,7 +26,7 @@ class UserCreate(UserBase):
 
 class UserPublic(UserBase):
     id: uuid.UUID
-    password_hash: str
+    # password_hash: str
 
 
 class Token(SQLModel):

@@ -5,18 +5,19 @@ from joserfc.jwt import encode, JWTClaimsRegistry
 
 from .lifespan import Config
 
-claims_requests = JWTClaimsRegistry()
-
 
 def oauth_user_token(data: dict, expires_delta: timedelta | None = None):
     """
     Create a new JWT Bearer token using `data` as payload
     """
-    if expires_delta is None:
-        expires_delta = timedelta(minutes=30)
-
     header = {"alg": "HS256"}
-    claims = data
+
+    if not Config.ALGORITHM == header.get("alg"):
+        raise ValueError(f"Only 'ALGORITHM' {Config.ALGORITHM} is unsupported")
+    if expires_delta is None:
+        expires_delta = timedelta(minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    claims = data.copy()
     claims.update(
         {
             "iat": datetime.now(timezone.utc),
@@ -24,10 +25,8 @@ def oauth_user_token(data: dict, expires_delta: timedelta | None = None):
         }
     )
 
-    if Config.env.get("ALGORITHM") == header.get("alg"):
-        from joserfc.jwk import OctKey
-
-        key = OctKey.import_key(Config.env.get("SECRET_KEY"))
-        token = encode(header, claims, key)
-
-        return HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
+    key = Config.SECRET_KEY
+    token = encode(header, claims, key)
+    if Config.DEBUG:
+        print(f"{token=}")
+    return HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)

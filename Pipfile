@@ -14,6 +14,8 @@ isort = "*"
 autoflake = "*"
 passlib = "*"
 redis = {extras = ["hiredis"], version = "*"}
+flet = "*"
+httpx = "*"
 
 [dev-packages]
 
